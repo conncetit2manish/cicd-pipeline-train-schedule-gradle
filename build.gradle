@@ -1,0 +1,30 @@
+plugins {
+    id "com.moowork.node" version "1.2.0"
+}
+
+node {
+    download = true //it will install the nodejs and npm
+}
+
+task build
+
+task zip(type: Zip) {  // making archive for the deployment
+    from(".") { //this "." is denoting root directory of the project
+        include "*" //all the files as root level but not from the sub folder
+        include "bin/**"
+        include "data/**"
+        include "data_modules/**"
+        include "public/**"
+        include "routes/**"
+        include "VIEWS/**"
+    }
+    destinationDir(file("dist")) //archive will be generated in the dist folder which is in root directory
+    baseName "trainSchedule" //zip file name
+}
+
+build.dependsOn zip
+zip.dependsOn npm_build
+build.dependsOn npm_build
+build.dependsOn npmInstall
+build.dependsOn npm_test
+npm_test.dependsOn npmInstall
